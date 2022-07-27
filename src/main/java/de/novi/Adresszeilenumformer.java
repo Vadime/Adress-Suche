@@ -61,7 +61,10 @@ public class Adresszeilenumformer {
 
                 if (!foundCountry) { // wenn land nicht gefunden wurde
                     // suche oben nach land aus der provinz
-
+                    for (int i = 0; i < iteration; i++) {
+                        
+                    }
+                    
                     for (Document country : prevList) {
                         for (Document prov : country.collection(uidOfNextCollection).docs) {
                             if (province == prov) {
@@ -262,7 +265,7 @@ public class Adresszeilenumformer {
             for (int j = i; j < unsortedAdress.size(); j++) {
                 completeToken.append(unsortedAdress.get(j) + " ");
                 String str = completeToken.toString().trim();
-                if (str.contains(token)) {
+                if (str.replace(" ", "").contains(token.replace(" ", ""))) {
                     unsortedAdress.remove(token);
                     return true;
                 }
