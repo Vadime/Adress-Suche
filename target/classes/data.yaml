@@ -1,0 +1,16 @@
+# Versuch die Daten einfach formatiert ein zu lesen
+# in App anstat in Code hardcoden
+Deutschland: 
+  Thüringen:
+    Apolda: 
+      990510:
+        Fichtestraße:
+          33a
+          32
+          30
+          34
+  Hessen:
+    Frankfurt am Main:
+      60486:
+        Theodor-Heuss-Allee:
+          1
