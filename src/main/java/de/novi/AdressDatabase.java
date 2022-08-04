@@ -1,12 +1,11 @@
 package de.novi;
 
-import javax.print.Doc;
 
 import de.novi.database.Collection;
 import de.novi.database.Document;
 
 public class AdressDatabase extends Collection {
-        
+
         // keys of the Documents for referering to them when searching
         // may implement custom Classes for each collection so that
         // i dont have to use keys, also gives me the chance on code complection

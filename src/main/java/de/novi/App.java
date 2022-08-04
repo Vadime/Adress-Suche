@@ -12,7 +12,7 @@ public class App {
             if (str.equals("exit")) {
                 run = false;
             }
-            Map<String, String> adress = Adresszeilenumformer.resolveAdress(str);
+            Adress adress = Adresszeilenumformer.toAdress(str)[0];
             System.console().printf("%s\n", adress.toString());
         }
     }

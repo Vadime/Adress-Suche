@@ -1,13 +1,11 @@
 package de.novi;
 
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-import java.util.function.BiConsumer;
 
 import de.novi.database.Document;
 
@@ -24,12 +22,15 @@ public class Adresszeilenumformer {
         return unsortedAdress;
     }
 
-    public static void findDocumentInCollectionWithAdressToken(int iteration, String[] collectionUids,
-            Map<String, Document> sortedAdress, List<String> unsortedAdress,
+    public static void findDocumentInCollectionWithAdressToken(
+            int iteration,
+            String[] collectionUids,
+            Map<String, Document> sortedAdress,
+            List<String> unsortedAdress,
             List<Document> prevList) {
-        if (iteration >= collectionUids.length - 1) {
+        if (iteration >= collectionUids.length - 1)
             return;
-        }
+
         String uidOfCollection = collectionUids[iteration];
         String uidOfNextCollection = collectionUids[iteration + 1];
 
@@ -62,9 +63,9 @@ public class Adresszeilenumformer {
                 if (!foundCountry) { // wenn land nicht gefunden wurde
                     // suche oben nach land aus der provinz
                     for (int i = 0; i < iteration; i++) {
-                        
+
                     }
-                    
+
                     for (Document country : prevList) {
                         for (Document prov : country.collection(uidOfNextCollection).docs) {
                             if (province == prov) {
@@ -80,7 +81,7 @@ public class Adresszeilenumformer {
 
         // if(!foundProvinz) {
         // wenn nicht provinz gefunden egal ob
-        // land gefunden oder nicht -> 
+        // land gefunden oder nicht ->
         // einfach weiter machen und vielciht findest du
         // provinz in städten
         // }
@@ -91,7 +92,7 @@ public class Adresszeilenumformer {
 
     }
 
-    public static Map<String, String> resolveAdress(String input) {
+    public static Adress[] toAdress(String input) {
 
         List<String> unsortedAdress = splitAdressString(input);
 
@@ -101,172 +102,64 @@ public class Adresszeilenumformer {
 
         Map<String, Document> map = new HashMap<>();
 
-        findDocumentInCollectionWithAdressToken(0, colletionUids, map, unsortedAdress, AdressDatabase.instance.docs);
-
-        Map<String, String> newMap = new HashMap<>();
-        for (Entry<String, Document> en : map.entrySet()) {
-            newMap.put(en.getKey(), en.getValue().uid);
-        }
-        return newMap;
-
-        // List<Document> cityList;
-
-        // if (adress.province != null) {
-        // if (adress.country == null) {
-        // // country aus Provinz finden
-        // for (Document country : countryList) {
-        // for (Document province : country.collection(AdressDatabase.PROVINCES).docs) {
-        // if (adress.province == province) {
-        // adress.country = country;
-        // }
-        // }
-        // }
-        // }
-        // cityList = adress.province.collection(AdressDatabase.CITIES).docs;
-        // } else {
-        // cityList = new LinkedList<>();
-        // for (Document province : provinceList) {
-        // for (Document city : province.collection(AdressDatabase.CITIES).docs) {
-        // cityList.add(city);
-        // }
-        // }
-        // }
-
-        // for (Document city : cityList) {
-        // if (foundTocken(city.uid, unsortedAdress)) {
-        // adress.city = city;
-        // break;
-        // }
-        // }
-
-        // if (adress.city != null) {
-        // if (adress.province == null) {
-        // // country aus Provinz finden
-        // for (Document country : countryList) {
-        // for (Document province : country.collection(AdressDatabase.PROVINCES).docs) {
-        // for (Document city : province.collection(AdressDatabase.CITIES).docs) {
-        // if (adress.city == city) {
-        // adress.country = country;
-        // adress.province = province;
-        // }
-        // }
-        // }
-        // }
-        // }
-        // cityList = adress.province.collection(AdressDatabase.CITIES).docs;
-        // } else {
-        // // country nicht gefunden also suche provincen überall
-        // cityList = new LinkedList<>();
-        // for (Document province : provinceList) {
-        // for (Document city : province.collection(AdressDatabase.CITIES).docs) {
-        // cityList.add(city);
-        // }
-        // }
-        // }
-
-        // for (Document city : cityList) {
-        // if (foundTocken(city.uid, unsortedAdress)) {
-        // adress.city = city;
-        // break;
-        // }
-        // }
-
-        // List<Document> postalCodeList;
-
-        // if (adress.city != null) {
-        // if (adress.province == null) {
-        // // province aus Provinz finden
-        // for (Document city : provinceList) {
-        // for (Document postalCode : city.collection(AdressDatabase.CITIES).docs) {
-        // if (adress.province == postalCode) {
-        // adress.province = postalCode;
-        // }
-        // }
-        // }
-        // }
-        // postalCodeList = adress.city.collection(AdressDatabase.POSTALCODES).docs;
-        // } else {
-        // postalCodeList = new LinkedList<>();
-        // for (Document city : postalCodeList) {
-        // for (Document postalCode : city.collection(AdressDatabase.POSTALCODES).docs)
-        // {
-        // postalCodeList.add(postalCode);
-        // }
-        // }
-        // }
-
-        // for (Document postalCode : postalCodeList) {
-        // if (foundTocken(postalCode.uid, unsortedAdress)) {
-        // adress.postalCode = postalCode;
-        // break;
-        // }
-        // }
-
-        // if (adress.postalCode != null) {
-        // postalCodeList = adress.city.collection(AdressDatabase.POSTALCODES).docs;
-        // } else {
-        // // country nicht gefunden also suche provincen überall
-        // postalCodeList = new LinkedList<>();
-        // for (Document city : cityList) {
-        // for (Document postalCode : city.collection(AdressDatabase.POSTALCODES).docs)
-        // {
-        // postalCodeList.add(postalCode);
-        // }
-        // }
-        // }
-
-        // List<Document> streetList =
-        // adress.postalCode.collection(AdressDatabase.STREETS).docs;
-
-        // for (Document street : streetList) {
-        // if (foundTocken(street.uid, unsortedAdress)) {
-        // adress.street = street;
-        // break;
-        // }
-        // }
-
-        // if (adress.street == null) {
-        // // country nicht gefunden also suche provincen überall
-        // }
-
-        // List<Document> houseList =
-        // adress.street.collection(AdressDatabase.HOUSES).docs;
-
-        // for (Document house : houseList) {
-        // if (foundTocken(house.uid, unsortedAdress)) {
-        // adress.house = house;
-        // break;
-        // }
-        // }
-
-        // if (adress.house == null) {
-        // // country nicht gefunden also suche provincen überall
-        // }
-    }
-
-    private static String searchForToken(String token, List<String> unsortedAdress) {
-        for (int i = 0; i < unsortedAdress.size(); i++) {
-            StringBuilder completeToken = new StringBuilder();
-            for (int j = i; j < unsortedAdress.size(); j++) {
-                completeToken.append(unsortedAdress.get(j) + " ");
-                String str = completeToken.toString().trim();
-                if (str.contains(token)) {
-                    unsortedAdress.remove(token);
-                    return token;
-                }
+        for (int i = 0; i < 5; i++) {
+            findDocumentInCollectionWithAdressToken(0, colletionUids, map, unsortedAdress,
+                    AdressDatabase.instance.docs);
+            unsortedAdress = new LinkedList<>();
+            for (int j = 0; j < map.size(); j++) {
+                unsortedAdress.add(((Entry<String, Document>) (map.entrySet().toArray()[j])).getValue().uid);
             }
         }
-        return null;
+
+        Adress[] adress = new Adress[1];
+
+        for (int i = 0; i < adress.length; i++) {
+            Document country = map.get(AdressDatabase.COUNTRIES);
+            String countryName = null;
+            if (country != null)
+                countryName = country.uid;
+
+            Document province = map.get(AdressDatabase.PROVINCES);
+            String provinceName = null;
+            if (province != null)
+                provinceName = province.uid;
+
+            Document city = map.get(AdressDatabase.CITIES);
+            String cityName = null;
+            if (city != null)
+                cityName = city.uid;
+
+            Document postalCode = map.get(AdressDatabase.POSTALCODES);
+            String postalCodeName = null;
+            if (postalCode != null)
+                postalCodeName = postalCode.uid;
+
+            Document street = map.get(AdressDatabase.STREETS);
+            String streetName = null;
+            if (street != null)
+                streetName = street.uid;
+
+            Document house = map.get(AdressDatabase.HOUSES);
+            String houseName = null;
+            if (house != null)
+                houseName = house.uid;
+
+            adress[i] = new Adress(countryName, provinceName,
+                    cityName, postalCodeName, streetName, houseName);
+
+        }
+        return adress;
+
     }
 
     private static boolean foundTocken(String token, List<String> unsortedAdress) {
-        for (int i = 0; i < unsortedAdress.size(); i++) {
+        for (int i = 0; i < unsortedAdress.size(); i++) { // loop through every token in adress
             StringBuilder completeToken = new StringBuilder();
-            for (int j = i; j < unsortedAdress.size(); j++) {
+            for (int j = i; j < unsortedAdress.size(); j++) { // loop foreward to find tokens with more than one word
                 completeToken.append(unsortedAdress.get(j) + " ");
                 String str = completeToken.toString().trim();
                 if (str.replace(" ", "").contains(token.replace(" ", ""))) {
-                    unsortedAdress.remove(token);
+                    unsortedAdress.remove(token); // token found in database -> delete token from adress
                     return true;
                 }
             }
