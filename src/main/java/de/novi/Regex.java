@@ -1,5 +1,9 @@
 package de.novi;
 
+/*
+ * Test some Regex expressions
+ * not important for Adress-Sort
+ */
 public class Regex {
     
     public static void main(String[] args) {

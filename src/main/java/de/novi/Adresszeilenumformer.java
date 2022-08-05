@@ -11,15 +11,19 @@ import de.novi.database.Document;
 
 public class Adresszeilenumformer {
 
+    /*
+     * convert String adress into list of tokens 
+     * "[,;:%&!§$()]" this regex was testet in Regextest and should get rid of unuseful information
+     */
     public static List<String> splitAdressString(String input) {
         List<String> unsortedAdress = new LinkedList<>();
 
-        for (String token : input.replaceAll("[,;:%&!§$()]", " ").split(" ")) {
+        for (String token : input.replaceAll("[,;:%&!§$()]", " ").split(" ")) { // looping throug the splited string
             if (!token.isBlank()) {
-                unsortedAdress.add(token);
+                unsortedAdress.add(token); // write into list
             }
         }
-        return unsortedAdress;
+        return unsortedAdress; // return completed List of tokens that represent the adress
     }
 
     public static void findDocumentInCollectionWithAdressToken(
@@ -51,12 +55,10 @@ public class Adresszeilenumformer {
             }
         }
 
-        boolean foundProvinz = false;
 
         // die provinzen sind ready
         for (Document province : nextList) { // thüringen in allen Provinzen
             if (foundTocken(province.uid, unsortedAdress)) { // thüringen steht in adresse
-                foundProvinz = true;
                 // provinz gefunden
                 sortedAdress.put(uidOfNextCollection, province);
 
@@ -79,19 +81,16 @@ public class Adresszeilenumformer {
             }
         }
 
-        // if(!foundProvinz) {
-        // wenn nicht provinz gefunden egal ob
-        // land gefunden oder nicht ->
-        // einfach weiter machen und vielciht findest du
-        // provinz in städten
-        // }
-
         iteration++;
         findDocumentInCollectionWithAdressToken(iteration, collectionUids, sortedAdress, unsortedAdress,
                 nextList);
 
     }
 
+    /*
+     * starting method, returns an Array of adresses because there might be an adress that duplicates, 
+     * not described in my WORK, thats why i am using only the first element in the array, so that you only get the first adress that matched
+     */
     public static Adress[] toAdress(String input) {
 
         List<String> unsortedAdress = splitAdressString(input);
@@ -110,6 +109,8 @@ public class Adresszeilenumformer {
                 unsortedAdress.add(((Entry<String, Document>) (map.entrySet().toArray()[j])).getValue().uid);
             }
         }
+
+        // this part is TERRIBLY done, needs improvement, but works for now
 
         Adress[] adress = new Adress[1];
 
@@ -152,6 +153,10 @@ public class Adresszeilenumformer {
 
     }
 
+    /*
+     * very important method, checks if token is a part of the adress
+     * contains improvements such as "multi word search" and lack of spaces support
+     */
     private static boolean foundTocken(String token, List<String> unsortedAdress) {
         for (int i = 0; i < unsortedAdress.size(); i++) { // loop through every token in adress
             StringBuilder completeToken = new StringBuilder();

@@ -4,6 +4,10 @@ package de.novi;
 import de.novi.database.Collection;
 import de.novi.database.Document;
 
+/*
+ * This Class contains all Adresses known by my Program
+ * later instead of hardcode the adresses this class will be an API for a Geolocation service
+ */
 public class AdressDatabase extends Collection {
 
         // keys of the Documents for referering to them when searching

@@ -3,6 +3,10 @@ package de.novi;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * Simple CLass holding adress variables accessible with getters and setters
+ * notice it contains the methods toString and toMap for convenience
+ */
 public class Adress {
     
     private String country;
